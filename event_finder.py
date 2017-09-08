@@ -23,12 +23,13 @@ def generate_tickets():
     #Randomly generate number of tickets, between 0 and 1000
     t_number = random.randint(0, 1000)
     #Make 2D array for tickets
-    tickets = [[0]* t_number for i in range(t_number)]
+    tickets = [[0] * t_number for i in range(t_number)]
     for i in range(0, t_number):
         #Generate a random price between 0 and 100 to 2 d.p.
         t_price = round(random.uniform(1, 100), 2)
         #Add the ticket price and number into the array
         tickets[i] = t_price, t_number
+    tickets = sorted(tickets, key=lambda x : int(x[1]))
     return tickets
 
 #Compute the Manhattan distance between two pairs of co-ordinates.
@@ -41,7 +42,7 @@ def manhattan_distance(c1, c2):
 def find_events():
     #Prompt user for coordinates
     user_coords = input("\nPlease Input Co-ordinates: ")
-    #Check for non numerical values. If detected, print an error message and re-prompt user for co-ordinates.
+    #Check for non numerical values, or single co-ordinate values. If detected, print an error message and re-prompt user for co-ordinates.
     if not(user_coords.replace(","," ").replace(" ", "").replace("-", "").isdigit()) or (len(user_coords) < 2):
         print("\nCo-ordinates types must be 2 integers, -10 to +10 inclusive.")
         return find_events()
@@ -73,24 +74,29 @@ def seed_events(user_coords, events, tickets):
     #Return the five closest events.
     return event_info[:5]
 
+def print_events(events):
+    #Print list of events to user.
+        if events is not None:
+            for event in events:
+                if event is not None:
+                    print("Event %s - $%.2f, # of tickets: %s, Distance %s\n" % (str(event[0]), event[2], str(event[3]), str(event[1])))
+    
+
 #Main function.
 def main():
     #Generate event data.
     events = generate_events()
     #Generate ticket data.
     tickets = generate_tickets()
+    
     #Allow user to query program with different sets of co-ordinates.
     while True:
         #Get user co-ordinates.
         user_coords = find_events()
         #Get the closest events to user.
         closest_events = seed_events(user_coords, events, tickets)
-
-        #Print list of events to user.
-        if closest_events is not None:
-            for event in closest_events:
-                if event is not None:
-                    print("Event " + str(event[0]) + " - " + "$" + str(event[2]) + ", # of tickets: " + str(event[3]) + ", Distance " + str(event[1]) + "\n")
-
-
+        
+        #Print list of events.
+        print_events(closest_events)
+        
 if __name__ == "__main__": main()
