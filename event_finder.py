@@ -80,6 +80,7 @@ def seed_events(user_coords, events, tickets):
         #Populate a list with the event and ticket data.
         event_info.append((str("0" * (3 - len(str(i+1))) + str(i+1)), manhattan_distance(user_coords, events[i][:2]), events[i][2][0][0], events[i][2][0][1]))
     #Sort the events by Manhattan distance value.
+    event_info = sorted(event_info, key =lambda x : x[2])
     event_info = sorted(event_info, key=lambda x : x[1])
     #Return the five closest events.
     return event_info[:5]
