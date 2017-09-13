@@ -21,15 +21,25 @@ def generate_events():
 #Generate tickets
 def generate_tickets():
     #Randomly generate number of tickets, between 0 and 1000
-    t_number = random.randint(0, 1000)
-    #Make 2D array for tickets
-    tickets = [[0] * t_number for i in range(t_number)]
-    for i in range(0, t_number):
-        #Generate a random price between 0 and 100 to 2 d.p.
-        t_price = round(random.uniform(1, 100), 2)
-        #Add the ticket price and number into the array
-        tickets[i] = t_price, t_number
-    tickets = sorted(tickets, key=lambda x : int(x[1]))
+    t_number = random.randint(0,1000)
+    #In the case there are no tickets.
+    if t_number == 0:
+        tickets = [[0] * 1 for i in range(0,1)]
+        for i in range(0, 1):
+            #Generate a random price between 0 and 100 to 2 d.p.
+            t_price = round(random.uniform(1, 100), 2)
+            #Add the ticket price and number into the array
+            tickets[i] = t_price, t_number
+    else:    
+        #Make 2D array for tickets
+        tickets = [[0] * t_number for i in range(t_number)]
+        for i in range(0, t_number):
+            #Generate a random price between 0 and 100 to 2 d.p.
+            t_price = round(random.uniform(1, 100), 2)
+            #Add the ticket price and number into the array
+            tickets[i] = t_price, t_number
+    tickets.sort()
+    tickets = sorted(tickets, key=lambda x : int(x[0]))
     return tickets
 
 #Compute the Manhattan distance between two pairs of co-ordinates.
@@ -66,11 +76,10 @@ def find_events():
 def seed_events(user_coords, events, tickets):
     #Empty list for event information.
     event_info = []
-    for i in range(0, len(events)):
+    for i in range(len(events)):
         #Populate a list with the event and ticket data.
-        event_info.append((str("0" * (3 - len(str(i+1))) + str(i+1)), manhattan_distance(user_coords, events[i][:2]), events[i][2][0][0], events[i][2][1][1]))
+        event_info.append((str("0" * (3 - len(str(i+1))) + str(i+1)), manhattan_distance(user_coords, events[i][:2]), events[i][2][0][0], events[i][2][0][1]))
     #Sort the events by Manhattan distance value.
-    event_info = sorted(event_info, key=lambda x : x[3])
     event_info = sorted(event_info, key=lambda x : x[1])
     #Return the five closest events.
     return event_info[:5]
@@ -94,6 +103,7 @@ def main():
     while True:
         #Get user co-ordinates.
         user_coords = find_events()
+
         #Get the closest events to user.
         closest_events = seed_events(user_coords, events, tickets)
         
